@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Multiplication Tables</title>
+  <style>
+    :root {
+      --text: #1f2430;
+      --accent: #7c3aed;
+      --accent2: #ec4899;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px 16px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 50%, #fef3c7 100%);
+      background-attachment: fixed;
+    }
+
+    .wrapper {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0 0 24px;
+      font-size: 2.4rem;
+      background: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 170px;
+      padding: 11px 14px;
+      font-size: 1rem;
+      border: 2px solid #c4b5fd;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    input:focus-visible,
+    button:focus-visible {
+      outline: 3px solid #f9a8d4;
+    }
+
+    button {
+      padding: 11px 22px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+    }
+
+    button:hover { filter: brightness(1.1); }
+    button:active { transform: translateY(1px); }
+
+    .message {
+      text-align: center;
+      min-height: 24px;
+      margin: 8px 0 20px;
+      color: #c92a2a;
+      font-weight: 600;
+    }
+
+    .tables {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 18px;
+    }
+
+    .table-card {
+      --hue: 260;
+      background: #fff;
+      border: 2px solid hsl(var(--hue) 80% 80%);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px hsl(var(--hue) 70% 50% / 0.18);
+      transition: transform 0.15s ease;
+    }
+
+    .table-card:hover { transform: translateY(-4px); }
+
+    .table-card h2 {
+      margin: 0;
+      padding: 12px;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #fff;
+      background: linear-gradient(135deg, hsl(var(--hue) 75% 52%), hsl(calc(var(--hue) + 40) 80% 58%));
+    }
+
+    .table-card ul {
+      list-style: none;
+      margin: 0;
+      padding: 8px 0;
+    }
+
+    .table-card li {
+      padding: 6px 16px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .table-card li:nth-child(even) { background: hsl(var(--hue) 90% 95%); }
+    .table-card li b { color: hsl(var(--hue) 70% 42%); }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Multiplication Tables</h1>
+
+    <div class="controls">
+      <input type="number" id="numberInput" placeholder="Enter a number" min="1" max="100" />
+      <button id="showBtn">Show tables</button>
+    </div>
+
+    <p class="message" id="message"></p>
+    <div class="tables" id="output"></div>
+  </div>
+
+  <script>
+    const input = document.getElementById("numberInput");
+    const button = document.getElementById("showBtn");
+    const message = document.getElementById("message");
+    const output = document.getElementById("output");
+
+    function showTables() {
+      const n = parseInt(input.value, 10);
+      output.innerHTML = "";
+      message.textContent = "";
+
+      if (isNaN(n) || n < 1) {
+        message.textContent = "Please enter a whole number of 1 or more.";
+        return;
+      }
+      if (n > 100) {
+        message.textContent = "Please enter a number up to 100.";
+        return;
+      }
+
+      // Tables of 1 up to n, each running from x1 to x10
+      for (let t = 1; t <= n; t++) {
+        const card = document.createElement("div");
+        card.className = "table-card";
+        card.style.setProperty("--hue", (t * 47) % 360); // a different colour per table
+
+        let rows = "";
+        for (let i = 1; i <= 10; i++) {
+          rows += `<li>${t} × ${i} = <b>${t * i}</b></li>`;
+        }
+
+        card.innerHTML = `<h2>Table of ${t}</h2><ul>${rows}</ul>`;
+        output.appendChild(card);
+      }
+    }
+
+    button.addEventListener("click", showTables);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") showTables();
+    });
+  </script>
+</body>
+</html>
